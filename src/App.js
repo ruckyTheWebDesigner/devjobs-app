@@ -1,24 +1,75 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+import HomePage from "./pages/Homepage/HomePage";
+import CompanyPage from "./pages/Company/CompanyPage";
+
+const getDesignTokens = (mode) => ({
+  palette: {
+    type: mode,
+    background: {
+      default: mode === "light" ? "hsl(0, 0%, 98%)" : "#121721",
+      paper: mode === "light" ? "hsl(0, 0%, 98%)" : "#19202D",
+    },
+    primary: {
+      main: mode === "light" ? "#5964E0" : "#FF0000",
+    },
+    secondary: {
+      main: mode === "light" ? "hsl(208, 100%, 58%)" : "hsl(208, 100%, 58%)",
+    },
+    text: {
+      primary: mode === "light" ? "#19202D" : "hsl(0, 0%, 100%)",
+      secondary: mode === "light" ? "#6E8098" : "#19202D",
+    },
+  },
+});
+const localTheme = localStorage.getItem("theme");
 
 function App() {
+  const [mode, setmode] = useState(localTheme || "light");
+
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const toogleMode = () => {
+    if (mode === "light") {
+      setmode("dark");
+      localStorage.setItem("theme", "dark");
+    } else if (mode === "dark") {
+      setmode("light");
+
+      localStorage.setItem("theme", "light");
+    }
+  };
+
+  const customTheme = React.useMemo(
+    () => createTheme(getDesignTokens(mode)),
+    [mode]
+  );
+
+  useEffect(() => {
+    if (prefersDarkMode) {
+      setmode("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      setmode("light");
+      localStorage.setItem("theme", "light");
+    }
+  }, [prefersDarkMode]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={customTheme}>
+      <CssBaseline />
+      <NavBar toggleMode={toogleMode} />
+      <Router>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/company/:companyname' element={<CompanyPage />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
