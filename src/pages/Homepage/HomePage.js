@@ -7,7 +7,7 @@ import Jobs from "../../components/JobsComponent";
 
 import jobsData from "../../assets/data";
 
-const jobsPerPage = 6;
+const jobsPerPage = 9;
 
 function HomePage() {
   const [jobsToShow, setJobsToShow] = useState(jobsData.slice(0, jobsPerPage));
