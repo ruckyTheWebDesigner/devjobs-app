@@ -4,6 +4,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import useSound from "use-sound";
+import toggleSound from "./assets/sound/toggle.mp3";
 
 import HomePage from "./pages/Homepage/HomePage";
 import CompanyPage from "./pages/Company/CompanyPage";
@@ -31,13 +33,16 @@ const localTheme = localStorage.getItem("theme");
 
 function App() {
   const [mode, setmode] = useState(localTheme || "light");
+  const [play] = useSound(toggleSound);
 
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const toogleMode = () => {
     if (mode === "light") {
+      play();
       setmode("dark");
       localStorage.setItem("theme", "dark");
     } else if (mode === "dark") {
+      play();
       setmode("light");
 
       localStorage.setItem("theme", "light");
